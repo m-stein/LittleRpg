@@ -1,11 +1,11 @@
 html, body {
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
-  image-rendering: pixelated;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    image-rendering: pixelated;
 }
 
 canvas {
-  width: 100%;
-  background-color: #213547;
+    width: 100%;
+    background-color: #213547;
 }
