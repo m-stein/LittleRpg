@@ -18,7 +18,7 @@ export class Sprite
         this.numColumns = numColumns ?? 1;
         this.numRows = numRows ?? 1;
         this.scaleFactor = scaleFactor ?? 1;
-        this.drawFrameIndex = drawFrameIndex ?? 0;
+        this.currFrameIndex = drawFrameIndex ?? 0;
         this.frameMap = new Map();
         this.createFrameMap();
     }
@@ -26,9 +26,9 @@ export class Sprite
     createFrameMap()
     {
         let frameIdx = 0;
-        for (let colIdx = 0; colIdx < this.numColumns; colIdx++) {
-            for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
-                const framePos = new Vector2(rowIdx * this.frameSize.x, colIdx * this.frameSize.y);
+        for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
+            for (let colIdx = 0; colIdx < this.numColumns; colIdx++) {
+                const framePos = new Vector2(colIdx * this.frameSize.x, rowIdx * this.frameSize.y);
                 this.frameMap.set(frameIdx, framePos);
                 frameIdx++;
             }
@@ -40,7 +40,7 @@ export class Sprite
         if (!this.sourceImage.isLoaded)
             return;
 
-        const frame = this.frameMap.get(this.drawFrameIndex);
+        const frame = this.frameMap.get(this.currFrameIndex);
         if (!frame) {
             console.warn("failed to get frame from map");
             return;
