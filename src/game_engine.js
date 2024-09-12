@@ -1,11 +1,11 @@
 export class GameEngine
 {
-    constructor(updateGame, renderGame)
+    constructor(game)
     {
         this.lastUpdateTime = 0;
         this.accumulatedTime = 0;
         this.gameUpdatePeriod = 1000 / 60;
-        this.game = { update: updateGame, render: renderGame };
+        this.game = game;
         this.updateCallbackId = null;
         this.started = false;
     }
