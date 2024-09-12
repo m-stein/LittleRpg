@@ -22,13 +22,21 @@ const heroSprite = new Sprite({
   frameSize: new Vector2(32, 32),
   numColumns: 3,
   numRows: 8,
-  drawFrameIndex: 1
+  drawFrameIndex: 1,
+  framePadding: new Vector2(8, 21)
+});
+
+const shadowSprite = new Sprite({
+  sourceImage: resources.imageRegistry.shadow,
+  frameSize: new Vector2(32, 32),
+  framePadding: new Vector2(8, 21)
 });
 
 const draw = () => {
   skySprite.draw(ctx, 0, 0);
   groundSprite.draw(ctx, 0, 0);
-  heroSprite.draw(ctx, 5*16, 5*16);
+  shadowSprite.draw(ctx, 6*16, 5*16);
+  heroSprite.draw(ctx, 6*16, 5*16);
 }
 
 setInterval(() => { draw(); }, 300);

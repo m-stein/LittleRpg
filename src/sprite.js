@@ -5,6 +5,7 @@ export class Sprite
     constructor({
         sourceImage,
         frameSize,
+        framePadding,
         numColumns,
         numRows,
         scaleFactor,
@@ -13,6 +14,7 @@ export class Sprite
     {
         this.sourceImage = sourceImage;
         this.frameSize = frameSize;
+        this.framePadding = framePadding ?? new Vector2(0, 0)
         this.numColumns = numColumns ?? 1;
         this.numRows = numRows ?? 1;
         this.scaleFactor = scaleFactor ?? 1;
@@ -45,7 +47,8 @@ export class Sprite
         }
         ctx.drawImage(
             this.sourceImage.image, frame.x, frame.y,
-            this.frameSize.x, this.frameSize.y, x, y,
+            this.frameSize.x, this.frameSize.y,
+            x - this.framePadding.x, y - this.framePadding.y,
             this.frameSize.x * this.scaleFactor,
             this.frameSize.y * this.scaleFactor
         );
