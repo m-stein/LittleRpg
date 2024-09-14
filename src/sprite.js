@@ -9,7 +9,8 @@ export class Sprite
         numColumns,
         numRows,
         scaleFactor,
-        drawFrameIndex
+        drawFrameIndex,
+        position
     })
     {
         this.sourceImage = sourceImage;
@@ -19,6 +20,7 @@ export class Sprite
         this.numRows = numRows ?? 1;
         this.scaleFactor = scaleFactor ?? 1;
         this.currFrameIndex = drawFrameIndex ?? 0;
+        this.position = position ?? new Vector2(0, 0);
         this.frameMap = new Map();
         this.createFrameMap();
     }
@@ -35,7 +37,7 @@ export class Sprite
         }
     }
 
-    draw(ctx, x, y)
+    draw(ctx)
     {
         if (!this.sourceImage.isLoaded)
             return;
@@ -48,7 +50,8 @@ export class Sprite
         ctx.drawImage(
             this.sourceImage.image, frame.x, frame.y,
             this.frameSize.x, this.frameSize.y,
-            x - this.framePadding.x, y - this.framePadding.y,
+            this.position.x - this.framePadding.x,
+            this.position.y - this.framePadding.y,
             this.frameSize.x * this.scaleFactor,
             this.frameSize.y * this.scaleFactor
         );

@@ -1,6 +1,7 @@
 import { Resources } from './resources.js'
 import { Sprite } from './sprite.js'
 import { Vector2 } from './vector2.js'
+import { Grid } from './grid.js'
 import { GameEngine } from './game_engine.js'
 import './style.css'
 
@@ -17,16 +18,17 @@ class Main
 {
     constructor()
     {
+        this.grid = new Grid(16);
         this.resources = new Resources();
-        this.gameCanvas = document.querySelector('#gameCanvas');
-        this.ctx = gameCanvas.getContext("2d");
         this.skySprite = new Sprite({
             sourceImage: this.resources.imageRegistry.sky,
-            frameSize: new Vector2(320, 180)
+            frameSize: new Vector2(320, 180),
+            position: this.grid.cell(0, 0),
         });
         this.groundSprite = new Sprite({
             sourceImage: this.resources.imageRegistry.ground,
-            frameSize: new Vector2(320, 180)
+            frameSize: new Vector2(320, 180),
+            position: this.grid.cell(0, 0),
         });
         this.heroSprite = new Sprite({
             sourceImage: this.resources.imageRegistry.hero,
@@ -34,19 +36,20 @@ class Main
             numColumns: 3,
             numRows: 8,
             drawFrameIndex: 1,
-            framePadding: new Vector2(8, 21)
+            framePadding: new Vector2(8, 21),
+            position: this.grid.cell(5, 5),
         });
         this.shadowSprite = new Sprite({
             sourceImage: this.resources.imageRegistry.shadow,
             frameSize: new Vector2(32, 32),
-            framePadding: new Vector2(8, 21)
+            framePadding: new Vector2(8, 21),
+            position: this.heroSprite.position,
         });
-        this.gameEngine = new GameEngine(this);
-        this.gameEngine.start();
         this.activeDirectionInputs = [];
-        this.heroPosition = new Vector2(5*16, 5*16);
         document.addEventListener("keydown", this.onKeyDownEvent);
         document.addEventListener("keyup", this.onKeyUpEvent);
+        this.gameEngine = new GameEngine(this, '#gameCanvas');
+        this.gameEngine.start();
     }
 
     onKeyDownEvent = (event) =>
@@ -101,29 +104,29 @@ class Main
     update(time)
     {
         if (this.dominantDirectionInput() == Direction.UP) {
-            this.heroPosition.y--;
+            this.heroSprite.position.y--;
             this.heroSprite.currFrameIndex = 6;
         }
         if (this.dominantDirectionInput() == Direction.DOWN) {
-            this.heroPosition.y++;
+            this.heroSprite.position.y++;
             this.heroSprite.currFrameIndex = 0;
         }
         if (this.dominantDirectionInput() == Direction.LEFT) {
-            this.heroPosition.x--;
+            this.heroSprite.position.x--;
             this.heroSprite.currFrameIndex = 9;
         }
         if (this.dominantDirectionInput() == Direction.RIGHT) {
-            this.heroPosition.x++;
+            this.heroSprite.position.x++;
             this.heroSprite.currFrameIndex = 3;
         }
     }
 
-    render()
+    draw(drawingContext)
     {
-        this.skySprite.draw(this.ctx, 0, 0);
-        this.groundSprite.draw(this.ctx, 0, 0);
-        this.shadowSprite.draw(this.ctx, this.heroPosition.x, this.heroPosition.y);
-        this.heroSprite.draw(this.ctx, this.heroPosition.x, this.heroPosition.y);
+        this.skySprite.draw(drawingContext);
+        this.groundSprite.draw(drawingContext);
+        this.shadowSprite.draw(drawingContext);
+        this.heroSprite.draw(drawingContext);
     }
 }
 

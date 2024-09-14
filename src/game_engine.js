@@ -1,7 +1,9 @@
 export class GameEngine
 {
-    constructor(game)
+    constructor(game, canvasSelector)
     {
+        this.canvas = document.querySelector(canvasSelector);
+        this.drawingContext = this.canvas.getContext("2d");
         this.lastUpdateTime = 0;
         this.accumulatedTime = 0;
         this.gameUpdatePeriod = 1000 / 60;
@@ -24,7 +26,7 @@ export class GameEngine
             gameUpdated = true;
         }
         if (gameUpdated)
-            this.game.render();
+            this.game.draw(this.drawingContext);
 
         this.requestUpdate();
     }
