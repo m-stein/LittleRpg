@@ -1,11 +1,11 @@
-import { Resources } from './resources.js'
-import { Sprite } from './sprite.js'
-import { Vector2 } from './vector2.js'
-import { Grid } from './grid.js'
-import { GameEngine } from './game_engine.js'
-import { LinearMovement } from './linear_movement.js'
-import { floorVec2 } from './math.js'
-import './style.css'
+import { Resources } from './resources.js';
+import { Sprite } from './sprite.js';
+import { Vector2 } from './vector_2.js';
+import { GameEngine } from './game_engine.js';
+import { LinearMovement } from './linear_movement.js';
+import { floorVec2 } from './math.js';
+import { Level1 } from './level_1.js';
+import './style.css';
 
 const Direction =
 {
@@ -20,21 +20,9 @@ class Main
 {
     constructor()
     {
-        this.grid = new Grid(16);
         this.resources = new Resources();
-        this.skySprite = new Sprite
-        ({
-            sourceImage: this.resources.imageRegistry.sky,
-            frameSize: new Vector2(320, 180),
-            position: this.grid.cell(0, 0),
-        });
-        this.groundSprite = new Sprite
-        ({
-            sourceImage: this.resources.imageRegistry.ground,
-            frameSize: new Vector2(320, 180),
-            position: this.grid.cell(0, 0),
-        });
-        this.heroMovement = new LinearMovement({at: this.grid.cell(6, 5), speed: 0.005});
+        this.lvl = new Level1(this.resources);
+        this.heroMovement = new LinearMovement({at: this.lvl.grid.cellToPos(6, 5), speed: 0.005});
         this.heroSprite = new Sprite
         ({
             sourceImage: this.resources.imageRegistry.hero,
@@ -120,33 +108,35 @@ class Main
         this.shadowSprite.position = this.heroSprite.position;
         if (this.heroMovement.arrived) {
             let dst = this.heroMovement.at.copy();
+            let dstChanged = false;
             if (this.dominantDirectionInput() == Direction.UP) {
-                dst.y -= this.grid.cellSize;
-                this.heroMovement.startMovingTowards(dst);
+                dst.y -= this.lvl.grid.cellSize;
                 this.heroSprite.currFrameIndex = 6;
+                dstChanged = true;
             }
             if (this.dominantDirectionInput() == Direction.DOWN) {
-                dst.y += this.grid.cellSize;
-                this.heroMovement.startMovingTowards(dst);
+                dst.y += this.lvl.grid.cellSize;
                 this.heroSprite.currFrameIndex = 0;
+                dstChanged = true;
             }
             if (this.dominantDirectionInput() == Direction.LEFT) {
-                dst.x -= this.grid.cellSize;
-                this.heroMovement.startMovingTowards(dst);
+                dst.x -= this.lvl.grid.cellSize;
                 this.heroSprite.currFrameIndex = 9;
+                dstChanged = true;
             }
             if (this.dominantDirectionInput() == Direction.RIGHT) {
-                dst.x += this.grid.cellSize;
-                this.heroMovement.startMovingTowards(dst);
+                dst.x += this.lvl.grid.cellSize;
                 this.heroSprite.currFrameIndex = 3;
+                dstChanged = true;
             }
+            if (dstChanged && !this.lvl.isObstacle(dst))
+                this.heroMovement.startMovingTowards(dst);
         }
     }
 
     draw(drawingContext)
     {
-        this.skySprite.draw(drawingContext);
-        this.groundSprite.draw(drawingContext);
+        this.lvl.draw(drawingContext);
         this.shadowSprite.draw(drawingContext);
         this.heroSprite.draw(drawingContext);
     }
