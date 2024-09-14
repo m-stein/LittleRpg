@@ -1,12 +1,12 @@
 export class GameEngine
 {
-    constructor(game, canvasSelector)
+    constructor({game, canvasSelector, updatePeriodMs})
     {
         this.canvas = document.querySelector(canvasSelector);
         this.drawingContext = this.canvas.getContext("2d");
         this.lastUpdateTime = 0;
         this.accumulatedTime = 0;
-        this.gameUpdatePeriod = 1000 / 60;
+        this.gameUpdatePeriodMs = updatePeriodMs;
         this.game = game;
         this.updateCallbackId = null;
         this.started = false;
@@ -20,9 +20,9 @@ export class GameEngine
         this.accumulatedTime += (time - this.lastUpdateTime);
         this.lastUpdateTime = time;
         let gameUpdated = false;
-        while (this.accumulatedTime >= this.gameUpdatePeriod) {
-            this.accumulatedTime -= this.gameUpdatePeriod;
-            this.game.update(this.gameUpdatePeriod);
+        while (this.accumulatedTime >= this.gameUpdatePeriodMs) {
+            this.accumulatedTime -= this.gameUpdatePeriodMs;
+            this.game.update(this.gameUpdatePeriodMs);
             gameUpdated = true;
         }
         if (gameUpdated)

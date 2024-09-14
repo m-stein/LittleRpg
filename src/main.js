@@ -14,23 +14,41 @@ const Direction =
     NONE: 5,
 }
 
+function lerp(src, dst, amount)
+{
+    return src + (dst - src) * amount;
+}
+
+function lerpVec2(src, dst, factor)
+{
+    return new Vector2(lerp(src.x, dst.x, factor), lerp(src.y, dst.y, factor));
+}
+
+function clamp(value, min, max)
+{
+    return Math.min(Math.max(value, min), max);
+}
+
 class Main
 {
     constructor()
     {
         this.grid = new Grid(16);
         this.resources = new Resources();
-        this.skySprite = new Sprite({
+        this.skySprite = new Sprite
+        ({
             sourceImage: this.resources.imageRegistry.sky,
             frameSize: new Vector2(320, 180),
             position: this.grid.cell(0, 0),
         });
-        this.groundSprite = new Sprite({
+        this.groundSprite = new Sprite
+        ({
             sourceImage: this.resources.imageRegistry.ground,
             frameSize: new Vector2(320, 180),
             position: this.grid.cell(0, 0),
         });
-        this.heroSprite = new Sprite({
+        this.heroSprite = new Sprite
+        ({
             sourceImage: this.resources.imageRegistry.hero,
             frameSize: new Vector2(32, 32),
             numColumns: 3,
@@ -39,7 +57,8 @@ class Main
             framePadding: new Vector2(8, 21),
             position: this.grid.cell(5, 5),
         });
-        this.shadowSprite = new Sprite({
+        this.shadowSprite = new Sprite
+        ({
             sourceImage: this.resources.imageRegistry.shadow,
             frameSize: new Vector2(32, 32),
             framePadding: new Vector2(8, 21),
@@ -48,8 +67,17 @@ class Main
         this.activeDirectionInputs = [];
         document.addEventListener("keydown", this.onKeyDownEvent);
         document.addEventListener("keyup", this.onKeyUpEvent);
-        this.gameEngine = new GameEngine(this, '#gameCanvas');
+        this.gameEngine = new GameEngine
+        ({
+            game: this,
+            canvasSelector: '#gameCanvas',
+            updatePeriodMs: 1000 / 60
+        });
         this.gameEngine.start();
+        this.speed = 0.005;
+        this.heroSrcPosition = this.grid.cell(5, 5);
+        this.heroDstPosition = this.grid.cell(5, 5);
+        this.f = 0.0;
     }
 
     onKeyDownEvent = (event) =>
@@ -101,23 +129,37 @@ class Main
         this.activeDirectionInputs.splice(idx, 1);
     }
 
-    update(time)
+    update(deltaTimeMs)
     {
-        if (this.dominantDirectionInput() == Direction.UP) {
-            this.heroSprite.position.y--;
-            this.heroSprite.currFrameIndex = 6;
-        }
-        if (this.dominantDirectionInput() == Direction.DOWN) {
-            this.heroSprite.position.y++;
-            this.heroSprite.currFrameIndex = 0;
-        }
-        if (this.dominantDirectionInput() == Direction.LEFT) {
-            this.heroSprite.position.x--;
-            this.heroSprite.currFrameIndex = 9;
-        }
-        if (this.dominantDirectionInput() == Direction.RIGHT) {
-            this.heroSprite.position.x++;
-            this.heroSprite.currFrameIndex = 3;
+        if (this.heroDstPosition.equals(this.heroSprite.position)) {
+            if (this.dominantDirectionInput() == Direction.UP) {
+                this.heroDstPosition.y -= this.grid.cellSize;
+                this.heroSprite.currFrameIndex = 6;
+            }
+            if (this.dominantDirectionInput() == Direction.DOWN) {
+                this.heroDstPosition.y += this.grid.cellSize;
+                this.heroSprite.currFrameIndex = 0;
+            }
+            if (this.dominantDirectionInput() == Direction.LEFT) {
+                this.heroDstPosition.x -= this.grid.cellSize;
+                this.heroSprite.currFrameIndex = 9;
+            }
+            if (this.dominantDirectionInput() == Direction.RIGHT) {
+                this.heroDstPosition.x += this.grid.cellSize;
+                this.heroSprite.currFrameIndex = 3;
+            }
+        } else {
+            let velocity = clamp(this.speed * deltaTimeMs, 0, 1);
+            if (this.f < 1 - velocity) {
+                this.f += velocity;
+                this.heroSprite.position = lerpVec2(this.heroSrcPosition, this.heroDstPosition, this.f);
+                this.shadowSprite.position = this.heroSprite.position;
+            } else {
+                this.f = 0;
+                this.heroSprite.position = this.heroDstPosition.copy();
+                this.heroSrcPosition = this.heroDstPosition.copy();
+                this.shadowSprite.position = this.heroSprite.position;
+            }
         }
     }
 
