@@ -3,6 +3,8 @@ import { Sprite } from './sprite.js'
 import { Vector2 } from './vector2.js'
 import { Grid } from './grid.js'
 import { GameEngine } from './game_engine.js'
+import { LinearMovement } from './linear_movement.js'
+import { floorVec2 } from './math.js'
 import './style.css'
 
 const Direction =
@@ -12,21 +14,6 @@ const Direction =
     LEFT: 3,
     RIGHT: 4,
     NONE: 5,
-}
-
-function lerp(src, dst, amount)
-{
-    return src + (dst - src) * amount;
-}
-
-function lerpVec2(src, dst, factor)
-{
-    return new Vector2(lerp(src.x, dst.x, factor), lerp(src.y, dst.y, factor));
-}
-
-function clamp(value, min, max)
-{
-    return Math.min(Math.max(value, min), max);
 }
 
 class Main
@@ -47,6 +34,7 @@ class Main
             frameSize: new Vector2(320, 180),
             position: this.grid.cell(0, 0),
         });
+        this.heroMovement = new LinearMovement({at: this.grid.cell(6, 5), speed: 0.005});
         this.heroSprite = new Sprite
         ({
             sourceImage: this.resources.imageRegistry.hero,
@@ -55,7 +43,7 @@ class Main
             numRows: 8,
             drawFrameIndex: 1,
             framePadding: new Vector2(8, 21),
-            position: this.grid.cell(5, 5),
+            position: this.heroMovement.at,
         });
         this.shadowSprite = new Sprite
         ({
@@ -74,10 +62,6 @@ class Main
             updatePeriodMs: 1000 / 60
         });
         this.gameEngine.start();
-        this.speed = 0.005;
-        this.heroSrcPosition = this.grid.cell(5, 5);
-        this.heroDstPosition = this.grid.cell(5, 5);
-        this.f = 0.0;
     }
 
     onKeyDownEvent = (event) =>
@@ -131,34 +115,30 @@ class Main
 
     update(deltaTimeMs)
     {
-        if (this.heroDstPosition.equals(this.heroSprite.position)) {
+        this.heroMovement.update(deltaTimeMs);
+        this.heroSprite.position = floorVec2(this.heroMovement.at);
+        this.shadowSprite.position = this.heroSprite.position;
+        if (this.heroMovement.arrived) {
+            let dst = this.heroMovement.at.copy();
             if (this.dominantDirectionInput() == Direction.UP) {
-                this.heroDstPosition.y -= this.grid.cellSize;
+                dst.y -= this.grid.cellSize;
+                this.heroMovement.startMovingTowards(dst);
                 this.heroSprite.currFrameIndex = 6;
             }
             if (this.dominantDirectionInput() == Direction.DOWN) {
-                this.heroDstPosition.y += this.grid.cellSize;
+                dst.y += this.grid.cellSize;
+                this.heroMovement.startMovingTowards(dst);
                 this.heroSprite.currFrameIndex = 0;
             }
             if (this.dominantDirectionInput() == Direction.LEFT) {
-                this.heroDstPosition.x -= this.grid.cellSize;
+                dst.x -= this.grid.cellSize;
+                this.heroMovement.startMovingTowards(dst);
                 this.heroSprite.currFrameIndex = 9;
             }
             if (this.dominantDirectionInput() == Direction.RIGHT) {
-                this.heroDstPosition.x += this.grid.cellSize;
+                dst.x += this.grid.cellSize;
+                this.heroMovement.startMovingTowards(dst);
                 this.heroSprite.currFrameIndex = 3;
-            }
-        } else {
-            let velocity = clamp(this.speed * deltaTimeMs, 0, 1);
-            if (this.f < 1 - velocity) {
-                this.f += velocity;
-                this.heroSprite.position = lerpVec2(this.heroSrcPosition, this.heroDstPosition, this.f);
-                this.shadowSprite.position = this.heroSprite.position;
-            } else {
-                this.f = 0;
-                this.heroSprite.position = this.heroDstPosition.copy();
-                this.heroSrcPosition = this.heroDstPosition.copy();
-                this.shadowSprite.position = this.heroSprite.position;
             }
         }
     }
