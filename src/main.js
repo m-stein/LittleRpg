@@ -36,7 +36,7 @@ class Main
         this.gameEngine = new GameEngine
         ({
             game: this,
-            canvasSelector: '#gameCanvas',
+            canvas: document.querySelector('#gameCanvas'),
             updatePeriodMs: 1000 / 60
         });
         this.gameEngine.start();
