@@ -2,7 +2,6 @@ export class TimedValue
 {
     constructor(phases)
     {
-        console.log(typeof(phases));
         this.phases = phases;
         this.startPhase(0);
     }

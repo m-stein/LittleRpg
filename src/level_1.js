@@ -4,7 +4,7 @@ import { Vector2 } from "./vector_2.js";
 
 export class Level1
 {
-    constructor(resources)
+    constructor(skyImg, groundImg)
     {
         this.grid = new Grid(16);
         this.obstacles = [
@@ -14,13 +14,13 @@ export class Level1
         ];
         this.skySprite = new Sprite
         ({
-            sourceImage: resources.imageRegistry.sky,
+            sourceImage: skyImg,
             frameSize: new Vector2(320, 180),
             position: this.grid.cellToPos(0, 0),
         });
         this.groundSprite = new Sprite
         ({
-            sourceImage: resources.imageRegistry.ground,
+            sourceImage: groundImg,
             frameSize: new Vector2(320, 180),
             position: this.grid.cellToPos(0, 0),
         });
