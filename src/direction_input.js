@@ -1,12 +1,12 @@
-export const Direction = { UP: 1, DOWN: 2, LEFT: 3, RIGHT: 4, NONE: 5 }
+export const Direction = { UP: 1, DOWN: 2, LEFT: 3, RIGHT: 4 }
 
 export class DirectionInput
 {
-    constructor(input)
+    constructor(inputSource)
     {
         this.activeInputs = [];
-        input.addEventListener("keydown", this.onKeyDownEvent);
-        input.addEventListener("keyup", this.onKeyUpEvent);
+        inputSource.addEventListener("keydown", this.onKeyDownEvent);
+        inputSource.addEventListener("keyup", this.onKeyUpEvent);
     }
 
     onKeyDownEvent = (event) =>
@@ -52,9 +52,6 @@ export class DirectionInput
 
     activeDirection()
     {
-        if (this.activeInputs.length == 0)
-            return Direction.NONE;
-
         return this.activeInputs[0]
     }
 }

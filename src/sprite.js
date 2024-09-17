@@ -37,7 +37,7 @@ export class Sprite
         }
     }
 
-    draw(ctx)
+    draw(drawingContext)
     {
         if (!this.sourceImage.isLoaded)
             return;
@@ -47,7 +47,7 @@ export class Sprite
             console.warn("failed to get frame from map");
             return;
         }
-        ctx.drawImage(
+        drawingContext.drawImage(
             this.sourceImage.image, frame.x, frame.y,
             this.frameSize.x, this.frameSize.y,
             this.position.x - this.framePadding.x,
