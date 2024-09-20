@@ -1,11 +1,13 @@
+import { GameObject } from "./game_object.js";
 import { Grid } from "./grid.js";
 import { Sprite } from "./sprite.js";
 import { Vector2 } from "./vector_2.js";
 
-export class Level1
+export class Level1 extends GameObject
 {
     constructor(skyImg, groundImg)
     {
+        super(new Vector2(0, 0), 'Level1');
         this.grid = new Grid(16);
         this.obstacles = [
             {col: 3, numCols: 13, row: 7, numRows: 1},
@@ -24,12 +26,8 @@ export class Level1
             frameSize: new Vector2(320, 180),
             position: this.grid.cellToPos(0, 0),
         });
-    }
-
-    draw(drawingContext)
-    {
-        this.skySprite.draw(drawingContext);
-        this.groundSprite.draw(drawingContext);
+        this.addChild(this.skySprite);
+        this.addChild(this.groundSprite);
     }
 
     isObstacle(position)

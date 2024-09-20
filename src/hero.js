@@ -4,11 +4,13 @@ import { Vector2 } from './vector_2.js';
 import { LinearMovement } from './linear_movement.js';
 import { floorVec2 } from './math.js';
 import { TimedValue } from './timed_value.js';
+import { GameObject } from './game_object.js';
 
-export class Hero
+export class Hero extends GameObject
 {
     constructor(level, heroImg, shadowImg, inputSource)
     {
+        super(new Vector2(0, 0), 'Hero');
         this.lvl = level;
         this.directionInput = new DirectionInput(inputSource);
         this.movement = new LinearMovement({at: this.lvl.grid.cellToPos(6, 5), speed: 0.005});
@@ -61,6 +63,8 @@ export class Hero
             framePadding: new Vector2(8, 21),
             position: this.heroSprite.position,
         });
+        this.addChild(this.heroSprite);
+        this.addChild(this.shadowSprite);
     }
 
     update(deltaTimeMs)
@@ -92,11 +96,5 @@ export class Hero
             }
         }
         this.heroSprite.currFrameIndex = this.frameIdx.value();
-    }
-
-    draw(drawingContext)
-    {
-        this.shadowSprite.draw(drawingContext);
-        this.heroSprite.draw(drawingContext, true);
     }
 }

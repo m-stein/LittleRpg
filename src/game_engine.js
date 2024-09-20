@@ -1,13 +1,15 @@
+import { DrawingContext } from "./drawing_context";
+import { Vector2 } from "./vector_2";
+
 export class GameEngine
 {
-    constructor({game, canvas, updatePeriodMs})
+    constructor({rootGameObj, canvas, updatePeriodMs})
     {
-        this.canvas = canvas;
-        this.drawingContext = this.canvas.getContext("2d");
+        this.drawingContext = new DrawingContext(canvas);
         this.lastUpdateTime = 0;
         this.accumulatedTime = 0;
         this.gameUpdatePeriodMs = updatePeriodMs;
-        this.game = game;
+        this.rootGameObj = rootGameObj;
         this.updateCallbackId = null;
         this.started = false;
     }
@@ -19,15 +21,15 @@ export class GameEngine
 
         this.accumulatedTime += (time - this.lastUpdateTime);
         this.lastUpdateTime = time;
-        let gameUpdated = false;
+        let rootGameObjUpdated = false;
         while (this.accumulatedTime >= this.gameUpdatePeriodMs) {
             this.accumulatedTime -= this.gameUpdatePeriodMs;
-            this.game.update(this.gameUpdatePeriodMs);
-            gameUpdated = true;
+            this.rootGameObj.updateRecursive(this.gameUpdatePeriodMs, 0);
+            rootGameObjUpdated = true;
         }
-        if (gameUpdated)
-            this.game.draw(this.drawingContext);
-
+        if (rootGameObjUpdated) {
+            this.rootGameObj.drawRecursive(this.drawingContext, 0);
+        }
         this.requestUpdate();
     }
 

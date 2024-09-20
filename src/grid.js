@@ -12,8 +12,8 @@ export class Grid
         return new Vector2(column * this.cellSize, row * this.cellSize);
     }
 
-    posToCell(pos)
+    posToCell(position)
     {
-        return [pos.x / this.cellSize, pos.y / this.cellSize];
+        return [position.x / this.cellSize, position.y / this.cellSize];
     }
 }

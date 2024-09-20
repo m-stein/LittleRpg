@@ -1,6 +1,8 @@
+import { GameObject } from './game_object.js';
+import { Rectangle } from './rectangle.js';
 import { Vector2 } from './vector_2.js'
 
-export class Sprite
+export class Sprite extends GameObject
 {
     constructor({
         sourceImage,
@@ -13,6 +15,7 @@ export class Sprite
         position
     })
     {
+        super(position, 'Sprite_' + sourceImage.src);
         this.sourceImage = sourceImage;
         this.frameSize = frameSize;
         this.framePadding = framePadding ?? new Vector2(0, 0)
@@ -20,7 +23,6 @@ export class Sprite
         this.numRows = numRows ?? 1;
         this.scaleFactor = scaleFactor ?? 1;
         this.currFrameIndex = drawFrameIndex ?? 0;
-        this.position = position ?? new Vector2(0, 0);
         this.frameMap = new Map();
         this.createFrameMap();
     }
@@ -47,13 +49,8 @@ export class Sprite
             console.warn("failed to get frame from map");
             return;
         }
-        drawingContext.drawImage(
-            this.sourceImage.image, frame.x, frame.y,
-            this.frameSize.x, this.frameSize.y,
-            this.position.x - this.framePadding.x,
-            this.position.y - this.framePadding.y,
-            this.frameSize.x * this.scaleFactor,
-            this.frameSize.y * this.scaleFactor
-        );
+        const srcRect = new Rectangle(frame, this.frameSize.x, this.frameSize.y);
+        const dstRect = new Rectangle(new Vector2(this.position.x - this.framePadding.x, this.position.y - this.framePadding.y), this.frameSize.x * this.scaleFactor, this.frameSize.y * this.scaleFactor)
+        drawingContext.drawImage(this.sourceImage.image, srcRect, dstRect);
     }
 }

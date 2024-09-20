@@ -20,4 +20,16 @@ export class Vector2
     {
         return this.x == other.x && this.y == other.y;
     }
+
+    add(other)
+    {
+        this.x += other.x;
+        this.y += other.y;
+    }
+    
+    subtract(other)
+    {
+        this.x -= other.x;
+        this.y -= other.y;
+    }
 }
