@@ -14,6 +14,8 @@ export class Hero extends GameObject
         this.lvl = level;
         this.directionInput = new DirectionInput(inputSource);
         this.movement = new LinearMovement({at: this.lvl.grid.cellToPos(6, 5), speed: 0.005});
+        this.width = 16;
+        this.height = 16;
         this.lookingDirection = Direction.DOWN;
         this.lookingFrameIdx = [];
         this.lookingFrameIdx[Direction.DOWN] = new TimedValue([{ val: 1, ms: 1000 }]);
@@ -54,14 +56,14 @@ export class Hero extends GameObject
             numRows: 8,
             drawFrameIndex: 1,
             framePadding: new Vector2(8, 21),
-            position: this.movement.at,
+            position: new Vector2(0, 0),
         });
         this.shadowSprite = new Sprite
         ({
             sourceImage: shadowImg,
             frameSize: new Vector2(32, 32),
             framePadding: new Vector2(8, 21),
-            position: this.heroSprite.position,
+            position: new Vector2(0, 0),
         });
         this.addChild(this.heroSprite);
         this.addChild(this.shadowSprite);
@@ -71,9 +73,7 @@ export class Hero extends GameObject
     {
         this.movement.update(deltaTimeMs);
         this.frameIdx.update(deltaTimeMs);
-
-        this.heroSprite.position = floorVec2(this.movement.at);
-        this.shadowSprite.position = this.heroSprite.position;
+        this.position = floorVec2(this.movement.at);
         if (this.movement.arrived) {
             const direction = this.directionInput.activeDirection()
             if (direction === undefined) {

@@ -5,7 +5,7 @@ import { Vector2 } from "./vector_2.js";
 
 export class Level1 extends GameObject
 {
-    constructor(skyImg, groundImg)
+    constructor(groundImg)
     {
         super(new Vector2(0, 0), 'Level1');
         this.grid = new Grid(16);
@@ -14,19 +14,12 @@ export class Level1 extends GameObject
             {col: 7, numCols:  4, row: 5, numRows: 1},
             {col: 4, numCols:  2, row: 4, numRows: 2},
         ];
-        this.skySprite = new Sprite
-        ({
-            sourceImage: skyImg,
-            frameSize: new Vector2(320, 180),
-            position: this.grid.cellToPos(0, 0),
-        });
         this.groundSprite = new Sprite
         ({
             sourceImage: groundImg,
             frameSize: new Vector2(320, 180),
             position: this.grid.cellToPos(0, 0),
         });
-        this.addChild(this.skySprite);
         this.addChild(this.groundSprite);
     }
 
