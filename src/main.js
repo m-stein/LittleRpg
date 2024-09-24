@@ -13,8 +13,8 @@ class Main extends GameObject
     {
         super(new Vector2(0, 0), 'Main');
         this.resources = new Resources();
-        this.lvl = new Level1(this.resources.imageRegistry.ground);
-        this.hero = new Hero(this.lvl, this.resources.imageRegistry.hero, this.resources.imageRegistry.shadow, document);
+        this.lvl = new Level1(this.resources);
+        this.hero = new Hero(this.lvl, this.resources, document);
         this.canvas = document.querySelector('#gameCanvas');
         this.camera = new Camera(this.resources.imageRegistry.sky, this.canvas.width, this.canvas.height);
         this.cameraOffset = new Vector2(this.lvl.grid.cellSize / 2 - this.canvas.width / 2, this.lvl.grid.cellSize / 2 - this.canvas.height / 2);

@@ -14,6 +14,20 @@ export class GameObject
         this.children.push(child);
     }
 
+    removeChild(child)
+    {
+        const index = this.children.indexOf(child);
+        if (index < 0) {
+            return;
+        }
+        this.children.splice(index, 1);
+    }
+
+    destroy()
+    {
+        this.children.forEach((child) => { child.destroy(); });
+    }
+
     updateRecursive(deltaTimeMs, level)
     {
         this.children.forEach((child) => { child.updateRecursive(deltaTimeMs, level + 1); });

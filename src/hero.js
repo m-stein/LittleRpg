@@ -8,12 +8,12 @@ import { GameObject } from './game_object.js';
 
 export class Hero extends GameObject
 {
-    constructor(level, heroImg, shadowImg, inputSource)
+    constructor(level, resources, inputSource)
     {
         super(new Vector2(0, 0), 'Hero');
         this.lvl = level;
         this.directionInput = new DirectionInput(inputSource);
-        this.movement = new LinearMovement({at: this.lvl.grid.cellToPos(6, 5), speed: 0.005});
+        this.movement = new LinearMovement({at: this.lvl.initialHeroPosition(), speed: 0.005});
         this.width = 16;
         this.height = 16;
         this.lookingDirection = Direction.DOWN;
@@ -22,6 +22,7 @@ export class Hero extends GameObject
         this.lookingFrameIdx[Direction.RIGHT] = new TimedValue([{ val: 4, ms: 1000 }]);
         this.lookingFrameIdx[Direction.UP] = new TimedValue([{ val: 7, ms: 1000 }]);
         this.lookingFrameIdx[Direction.LEFT] = new TimedValue([{ val: 10, ms: 1000 }]);
+        this.liftingFrameIdx = new TimedValue([{ val: 12, ms: 1000 }]);
         this.movingFrameIdx = [];
         this.movingFrameIdx[Direction.DOWN] = new TimedValue([
             { val: 1, ms: 100 },
@@ -50,7 +51,7 @@ export class Hero extends GameObject
         this.frameIdx = this.movingFrameIdx[Direction.DOWN];
         this.heroSprite = new Sprite
         ({
-            sourceImage: heroImg,
+            sourceImage: resources.imageRegistry.hero,
             frameSize: new Vector2(32, 32),
             numColumns: 3,
             numRows: 8,
@@ -60,39 +61,82 @@ export class Hero extends GameObject
         });
         this.shadowSprite = new Sprite
         ({
-            sourceImage: shadowImg,
+            sourceImage: resources.imageRegistry.shadow,
             frameSize: new Vector2(32, 32),
             framePadding: new Vector2(8, 21),
             position: new Vector2(0, 0),
         });
+        this.presentingItemTimeoutMs = 0;
+        this.presentingItem = undefined;
         this.addChild(this.heroSprite);
         this.addChild(this.shadowSprite);
     }
 
+    checkForNewMovement()
+    {
+        const direction = this.directionInput.activeDirection()
+        if (direction === undefined) {
+            this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
+            this.frameIdx.startPhase(0);
+        } else {
+            let dst = this.movement.at.copy();
+            switch (direction) {
+            case Direction.UP: dst.y -= this.lvl.grid.cellSize; break;
+            case Direction.DOWN: dst.y += this.lvl.grid.cellSize; break;
+            case Direction.LEFT: dst.x -= this.lvl.grid.cellSize; break;
+            case Direction.RIGHT: dst.x += this.lvl.grid.cellSize; break;
+            }
+            this.lookingDirection = direction;
+            if (!this.lvl.isObstacle(dst)) {
+                this.movement.startMovingTowards(dst);
+            }
+            this.frameIdx = this.movingFrameIdx[direction];
+            this.frameIdx.startPhase(0);
+        }
+    }
+
+    startPresentingItem = (item) => 
+    {
+        this.frameIdx = this.liftingFrameIdx;
+        this.lvl.removeChild(item);
+        this.addChild(item);
+        item.position = new Vector2(0, -20);
+        this.presentingItemTimeoutMs = 800;
+        this.presentingItem = item;
+    }
+
+    updatePresentingItem(deltaTimeMs)
+    {
+        if (this.presentingItemTimeoutMs > deltaTimeMs) {
+            this.presentingItemTimeoutMs -= deltaTimeMs;
+        } else {
+            this.presentingItemTimeoutMs = 0;
+            this.removeChild(this.presentingItem);
+            this.presentingItem = undefined;
+            this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
+        }
+    }
+
+    isPresentingItem()
+    {
+        return this.presentingItem != undefined;
+    }
+
     update(deltaTimeMs)
     {
+        let wasMoving = !this.movement.arrived;
         this.movement.update(deltaTimeMs);
         this.frameIdx.update(deltaTimeMs);
         this.position = floorVec2(this.movement.at);
         if (this.movement.arrived) {
-            const direction = this.directionInput.activeDirection()
-            if (direction === undefined) {
-                this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
-                this.frameIdx.startPhase(0);
-            } else {
-                let dst = this.movement.at.copy();
-                switch (direction) {
-                case Direction.UP: dst.y -= this.lvl.grid.cellSize; break;
-                case Direction.DOWN: dst.y += this.lvl.grid.cellSize; break;
-                case Direction.LEFT: dst.x -= this.lvl.grid.cellSize; break;
-                case Direction.RIGHT: dst.x += this.lvl.grid.cellSize; break;
-                }
-                this.lookingDirection = direction;
-                if (!this.lvl.isObstacle(dst)) {
-                    this.movement.startMovingTowards(dst);
-                }
-                this.frameIdx = this.movingFrameIdx[direction];
-                this.frameIdx.startPhase(0);
+            if (wasMoving) {
+                this.lvl.withItemAt(this.position, this.startPresentingItem);
+            }
+            if (this.isPresentingItem()) {
+                this.updatePresentingItem(deltaTimeMs);
+            }
+            if (!this.isPresentingItem()) {
+                this.checkForNewMovement();
             }
         }
         this.heroSprite.currFrameIndex = this.frameIdx.value();
