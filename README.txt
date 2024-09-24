@@ -5,11 +5,11 @@ Project
 
 > npm create vite@latest
 >   create-vite@5.5.2
->   Project name: ... LittleRPG
+>   Project name: ... LittleRpg
 >   Package name: ... littlerpg
 >   Select a framework: » Vanilla
 >   Select a variant: » JavaScript
-> cd LittleRPG
+> cd LittleRpg
 > npm install
 
 :Start Server:
