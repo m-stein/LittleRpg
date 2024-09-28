@@ -95,7 +95,7 @@ export class Hero extends GameObject
         }
     }
 
-    startPresentingItem = (item) => 
+    startItemPresentation = (item) => 
     {
         this.frameIdx = this.liftingFrameIdx;
         this.lvl.removeChild(item);
@@ -105,19 +105,20 @@ export class Hero extends GameObject
         this.presentingItem = item;
     }
 
-    updatePresentingItem(deltaTimeMs)
+    updateItemPresentation(deltaTimeMs)
     {
         if (this.presentingItemTimeoutMs > deltaTimeMs) {
             this.presentingItemTimeoutMs -= deltaTimeMs;
         } else {
             this.presentingItemTimeoutMs = 0;
             this.removeChild(this.presentingItem);
+            this.presentingItem.destroyRecursive();
             this.presentingItem = undefined;
             this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
         }
     }
 
-    isPresentingItem()
+    inItemPresentation()
     {
         return this.presentingItem != undefined;
     }
@@ -130,12 +131,12 @@ export class Hero extends GameObject
         this.position = floorVec2(this.movement.at);
         if (this.movement.arrived) {
             if (wasMoving) {
-                this.lvl.withItemAt(this.position, this.startPresentingItem);
+                this.lvl.withItemAt(this.position, this.startItemPresentation);
             }
-            if (this.isPresentingItem()) {
-                this.updatePresentingItem(deltaTimeMs);
+            if (this.inItemPresentation()) {
+                this.updateItemPresentation(deltaTimeMs);
             }
-            if (!this.isPresentingItem()) {
+            if (!this.inItemPresentation()) {
                 this.checkForNewMovement();
             }
         }

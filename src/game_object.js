@@ -1,5 +1,3 @@
-import { DrawingContext } from "./drawing_context";
-
 export class GameObject
 {
     constructor(position, label)
@@ -23,9 +21,10 @@ export class GameObject
         this.children.splice(index, 1);
     }
 
-    destroy()
+    destroyRecursive()
     {
         this.children.forEach((child) => { child.destroy(); });
+        this.children.length = 0;
     }
 
     updateRecursive(deltaTimeMs, level)

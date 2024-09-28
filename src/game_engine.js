@@ -1,5 +1,4 @@
 import { DrawingContext } from "./drawing_context";
-import { Vector2 } from "./vector_2";
 
 export class GameEngine
 {
