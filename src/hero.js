@@ -14,8 +14,6 @@ export class Hero extends GameObject
         this.lvl = level;
         this.directionInput = new DirectionInput(inputSource);
         this.movement = new LinearMovement({at: this.lvl.initialHeroPosition(), speed: 0.005});
-        this.width = 16;
-        this.height = 16;
         this.lookingDirection = Direction.DOWN;
         this.lookingFrameIdx = [];
         this.lookingFrameIdx[Direction.DOWN] = new TimedValue([{ val: 1, ms: 1000 }]);
