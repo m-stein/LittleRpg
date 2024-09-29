@@ -76,7 +76,6 @@ export class Hero extends GameObject
         const direction = this.directionInput.activeDirection()
         if (direction === undefined) {
             this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
-            this.frameIdx.startPhase(0);
         } else {
             let dst = this.movement.at.copy();
             switch (direction) {
@@ -90,7 +89,6 @@ export class Hero extends GameObject
                 this.movement.startMovingTowards(dst);
             }
             this.frameIdx = this.movingFrameIdx[direction];
-            this.frameIdx.startPhase(0);
         }
     }
 
