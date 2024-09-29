@@ -10,9 +10,23 @@ export class Level1 extends GameObject
         super(new Vector2(0, 0), 'Level1');
         this.grid = new Grid(16);
         this.obstacles = [
+
+            // island borders
+            {col: 2, numCols: 1, row: 3, numRows: 4},
+            {col: 3, numCols: 4, row: 2, numRows: 1},
+            {col: 7, numCols: 8, row: 1, numRows: 1},
+            {col: 15, numCols: 1, row: 2, numRows: 1},
+            {col: 16, numCols: 1, row: 3, numRows: 4},
             {col: 3, numCols: 13, row: 7, numRows: 1},
-            {col: 7, numCols:  4, row: 5, numRows: 1},
-            {col: 4, numCols:  2, row: 4, numRows: 2},
+
+            {col: 7, numCols:  4, row: 5, numRows: 1}, // water
+            {col: 4, numCols:  2, row: 4, numRows: 2}, // hills
+            {col: 8, numCols:  2, row: 3, numRows: 1}, // hills
+            {col: 14, numCols:  1, row: 1, numRows: 2}, // tree
+            {col: 13, numCols:  1, row: 3, numRows: 2}, // tree
+            {col: 4, numCols:  1, row: 2, numRows: 2}, // tree
+            {col: 14, numCols:  1, row: 4, numRows: 1}, // house
+            {col: 12, numCols:  3, row: 6, numRows: 1}, // stones
         ];
         this.groundSprite = new Sprite
         ({
@@ -36,6 +50,7 @@ export class Level1 extends GameObject
         ];
         this.addChild(this.groundSprite);
         this.items.forEach((item) => { this.addChild(item); });
+        this.markObstacles = false;
     }
 
     initialHeroPosition()
@@ -66,5 +81,26 @@ export class Level1 extends GameObject
 
     update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
 
-    draw(drawingContext) { this.drawChildren(drawingContext); }
+    drawObstacleMarks(drawingContext)
+    {
+        const globalAlpha = drawingContext.canvasContext.globalAlpha;
+        const fillStyle = drawingContext.canvasContext.fillStyle
+        drawingContext.canvasContext.globalAlpha = 0.3;
+        drawingContext.canvasContext.fillStyle = 'red';
+        this.obstacles.forEach((obstacle) => {
+            const pos = this.grid.cellToPos(obstacle.col, obstacle.row);
+            drawingContext.canvasContext.fillRect(
+                pos.x, pos.y, obstacle.numCols * this.grid.cellSize, obstacle.numRows * this.grid.cellSize);
+        });
+        drawingContext.canvasContext.globalAlpha = globalAlpha;
+        drawingContext.canvasContext.fillStyle = fillStyle;
+    }
+
+    draw(drawingContext)
+    {
+        this.drawChildren(drawingContext);
+        if (this.markObstacles) {
+            this.drawObstacleMarks(drawingContext);
+        }
+    }
 }
