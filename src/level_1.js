@@ -14,23 +14,28 @@ export class Level1 extends GameObject
             {col: 7, numCols:  4, row: 5, numRows: 1},
             {col: 4, numCols:  2, row: 4, numRows: 2},
         ];
-        this.items = [];
         this.groundSprite = new Sprite
         ({
             sourceImage: resources.imageRegistry.ground,
             frameSize: new Vector2(320, 180),
             position: this.grid.cellToPos(0, 0),
         });
-        this.rodSprite = new Sprite
-        ({
-            sourceImage: resources.imageRegistry.rod,
-            frameSize: new Vector2(320, 180),
-            position: this.grid.cellToPos(7, 6),
-            framePadding: new Vector2(0, 5),
-        });
+        this.items = [
+            new Sprite({
+                sourceImage: resources.imageRegistry.rod,
+                frameSize: new Vector2(16, 16),
+                position: this.grid.cellToPos(7, 6),
+                framePadding: new Vector2(0, 5),
+            }),
+            new Sprite({
+                sourceImage: resources.imageRegistry.rod,
+                frameSize: new Vector2(16, 16),
+                position: this.grid.cellToPos(12, 5),
+                framePadding: new Vector2(0, 5),
+            }),
+        ];
         this.addChild(this.groundSprite);
-        this.addChild(this.rodSprite);
-        this.items.push(this.rodSprite)
+        this.items.forEach((item) => { this.addChild(item); });
     }
 
     initialHeroPosition()

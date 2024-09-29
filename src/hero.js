@@ -8,12 +8,13 @@ import { GameObject } from './game_object.js';
 
 export class Hero extends GameObject
 {
-    constructor(level, resources, inputSource)
+    constructor(level, resources, inputSource, inventory)
     {
         super(new Vector2(0, 0), 'Hero');
         this.lvl = level;
         this.directionInput = new DirectionInput(inputSource);
         this.movement = new LinearMovement({at: this.lvl.initialHeroPosition(), speed: 0.005});
+        this.inventory = inventory;
         this.lookingDirection = Direction.DOWN;
         this.lookingFrameIdx = [];
         this.lookingFrameIdx[Direction.DOWN] = new TimedValue([{ val: 1, ms: 1000 }]);
@@ -110,7 +111,7 @@ export class Hero extends GameObject
         } else {
             this.presentingItemTimeoutMs = 0;
             this.removeChild(this.presentingItem);
-            this.presentingItem.destroyRecursive();
+            this.inventory.addItem(this.presentingItem);
             this.presentingItem = undefined;
             this.frameIdx = this.lookingFrameIdx[this.lookingDirection];
         }

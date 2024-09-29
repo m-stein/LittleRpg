@@ -38,4 +38,6 @@ export class GameObject
         this.children.forEach((child) => { child.draw(drawingContext, level + 1); });
         drawingContext.position.subtract(this.position);
     }
+
+    numChildren() { return this.children.length; }
 }
