@@ -27,21 +27,15 @@ export class GameObject
         this.children.length = 0;
     }
 
-    updateRecursive(deltaTimeMs, level)
+    updateChildren(deltaTimeMs, level)
     {
-        this.children.forEach((child) => { child.updateRecursive(deltaTimeMs, level + 1); });
-        this.update(deltaTimeMs);
+        this.children.forEach((child) => { child.update(deltaTimeMs, level + 1); });
     }
 
-    drawRecursive(drawingContext, level)
+    drawChildren(drawingContext, level)
     {
-        this.draw(drawingContext);
         drawingContext.position.add(this.position);
-        this.children.forEach((child) => { child.drawRecursive(drawingContext, level + 1); });
+        this.children.forEach((child) => { child.draw(drawingContext, level + 1); });
         drawingContext.position.subtract(this.position);
     }
-
-    update(deltaTimeMs) { /* May be overridden by an inheriting class. */ }
-
-    draw(drawingContext) { /* May be overridden by an inheriting class. */ }
 }

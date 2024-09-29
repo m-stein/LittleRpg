@@ -38,6 +38,8 @@ export class Sprite extends GameObject
             }
         }
     }
+    
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
 
     draw(drawingContext)
     {
@@ -52,5 +54,6 @@ export class Sprite extends GameObject
         const srcRect = new Rectangle(frame, this.frameSize.x, this.frameSize.y);
         const dstRect = new Rectangle(new Vector2(this.position.x - this.framePadding.x, this.position.y - this.framePadding.y), this.frameSize.x * this.scaleFactor, this.frameSize.y * this.scaleFactor)
         drawingContext.drawImage(this.sourceImage.image, srcRect, dstRect);
+        this.drawChildren(drawingContext);
     }
 }

@@ -58,4 +58,8 @@ export class Level1 extends GameObject
 
         return false;
     }
+
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
 }

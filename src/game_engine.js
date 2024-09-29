@@ -24,14 +24,14 @@ export class GameEngine
         let rootGameObjUpdated = false;
         while (this.accumulatedTime >= this.gameUpdatePeriodMs) {
             this.accumulatedTime -= this.gameUpdatePeriodMs;
-            this.rootGameObj.updateRecursive(this.gameUpdatePeriodMs, 0);
+            this.rootGameObj.update(this.gameUpdatePeriodMs, 0);
             rootGameObjUpdated = true;
         }
         if (rootGameObjUpdated) {
             this.drawingContext.canvasContext.clearRect(0, 0, this.drawingContext.canvas.width, this.drawingContext.canvas.height);
             this.drawingContext.canvasContext.save();
             this.drawingContext.canvasContext.translate(-this.camera.position.x, -this.camera.position.y);
-            this.rootGameObj.drawRecursive(this.drawingContext, 0);
+            this.rootGameObj.draw(this.drawingContext, 0);
             this.drawingContext.canvasContext.restore();
         }
         this.requestUpdate();

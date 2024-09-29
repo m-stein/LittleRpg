@@ -123,6 +123,7 @@ export class Hero extends GameObject
 
     update(deltaTimeMs)
     {
+        this.updateChildren(deltaTimeMs);
         let wasMoving = !this.movement.arrived;
         this.movement.update(deltaTimeMs);
         this.frameIdx.update(deltaTimeMs);
@@ -140,4 +141,6 @@ export class Hero extends GameObject
         }
         this.heroSprite.currFrameIndex = this.frameIdx.value();
     }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
 }

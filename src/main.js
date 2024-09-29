@@ -31,10 +31,16 @@ class Main extends GameObject
         this.addChild(this.hero);
     }
 
-    update()
+    update(deltaTimeMs)
     {
+        this.updateChildren(deltaTimeMs);
         this.camera.position = this.hero.position.copy();
         this.camera.position.add(this.cameraOffset);
+    }
+
+    draw(drawingContext)
+    {
+        this.drawChildren(drawingContext);
     }
 }
 

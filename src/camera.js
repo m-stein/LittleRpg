@@ -16,4 +16,8 @@ export class Camera extends GameObject
         console.log(this.backgroundSprite.frameSize.x, this.backgroundSprite.frameSize.y);
         this.addChild(this.backgroundSprite);
     }
+    
+    update(deltaTimeMs) { this.updateChildren(deltaTimeMs); }
+
+    draw(drawingContext) { this.drawChildren(drawingContext); }
 }
