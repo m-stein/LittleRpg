@@ -13,7 +13,6 @@ export class Camera extends GameObject
             frameSize: new Vector2(width, height),
             position: new Vector2(0, 0),
         });
-        console.log(this.backgroundSprite.frameSize.x, this.backgroundSprite.frameSize.y);
         this.addChild(this.backgroundSprite);
     }
     
