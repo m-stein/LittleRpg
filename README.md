@@ -17,9 +17,11 @@ Javascript ES6. Here are the vite parameters this project was created with:
 
 This is how you can start hosting the game locally (Windows PowerShell):
 
-> git clone git@github.com:m-stein/LittleRpg.git
-> cd .\LittleRpg
-> npx vite
+```
+git clone git@github.com:m-stein/LittleRpg.git
+cd .\LittleRpg
+npx vite
+```
 
 Then open the URL that vite listed under "Local" in your browser and enjoy.
 
