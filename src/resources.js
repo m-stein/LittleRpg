@@ -9,6 +9,7 @@ export class Resources
             rod: { src: "/sprites/rod.png" },
             shadow: { src: "/sprites/shadow.png" },
             spritesheet: { src: "/sprites/spritesheet.png" },
+            exit: { src: "/sprites/exit.png" },
         };
         Object.values(this.imageRegistry).forEach(entry => {
             entry.image = new Image();

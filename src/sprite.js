@@ -6,7 +6,7 @@ export class Sprite extends GameObject
 {
     constructor({
         sourceImage,
-        frameSize,
+        frameSize = new Vector2(sourceImage.image.width, sourceImage.image.height),
         framePadding,
         numColumns,
         numRows,

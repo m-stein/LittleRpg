@@ -5,6 +5,8 @@ import { LinearMovement } from './linear_movement.js';
 import { floorVec2 } from './math.js';
 import { TimedValue } from './timed_value.js';
 import { GameObject } from './game_object.js';
+import { Rod } from './rod.js';
+import { Exit } from './exit.js';
 
 export class Hero extends GameObject
 {
@@ -92,7 +94,7 @@ export class Hero extends GameObject
         }
     }
 
-    startItemPresentation = (item) => 
+    startItemPresentation(item)
     {
         this.frameIdx = this.liftingFrameIdx;
         this.lvl.removeChild(item);
@@ -120,6 +122,17 @@ export class Hero extends GameObject
         return this.presentingItem != undefined;
     }
 
+    interactWithItem = (item) => 
+    {
+        if (item instanceof Rod) {
+            this.startItemPresentation(item);
+            return;
+        }
+        if (item instanceof Exit) {
+            console.log("The hero arrived at an exit.");
+        }
+    }
+
     update(deltaTimeMs)
     {
         this.updateChildren(deltaTimeMs);
@@ -129,7 +142,7 @@ export class Hero extends GameObject
         this.position = floorVec2(this.movement.at);
         if (this.movement.arrived) {
             if (wasMoving) {
-                this.lvl.withItemAt(this.position, this.startItemPresentation);
+                this.lvl.withItemAt(this.position, this.interactWithItem);
             }
             if (this.inItemPresentation()) {
                 this.updateItemPresentation(deltaTimeMs);

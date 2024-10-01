@@ -2,6 +2,8 @@ import { GameObject } from "./game_object.js";
 import { Grid } from "./grid.js";
 import { Sprite } from "./sprite.js";
 import { Vector2 } from "./vector_2.js";
+import { Exit } from "./exit.js";
+import { Rod } from "./rod.js";
 
 export class Level1 extends GameObject
 {
@@ -35,18 +37,9 @@ export class Level1 extends GameObject
             position: this.grid.cellToPos(0, 0),
         });
         this.items = [
-            new Sprite({
-                sourceImage: resources.imageRegistry.rod,
-                frameSize: new Vector2(16, 16),
-                position: this.grid.cellToPos(7, 6),
-                framePadding: new Vector2(0, 5),
-            }),
-            new Sprite({
-                sourceImage: resources.imageRegistry.rod,
-                frameSize: new Vector2(16, 16),
-                position: this.grid.cellToPos(12, 5),
-                framePadding: new Vector2(0, 5),
-            }),
+            new Rod(resources, this.grid.cellToPos(7, 6)),
+            new Rod(resources, this.grid.cellToPos(12, 5)),
+            new Exit(resources, this.grid.cellToPos(11, 3)),
         ];
         this.addChild(this.groundSprite);
         this.items.forEach((item) => { this.addChild(item); });
